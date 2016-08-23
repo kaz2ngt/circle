@@ -2,21 +2,72 @@
     <head>
     </head>
     <body>
-		<h2>clearRect()</h2>
-		<canvas id="c1" width="140" height="140"></canvas>
+        <h2>全パターンの円</h2>
+        <canvas id="c1" width="400" height="400"></canvas>
+        <h2>最小の円</h2>
+        <canvas id="c2" width="400" height="400"></canvas>
+        半径は10.736ぐらい
         <script>
+        var ORIGIN = { x: 100, y: 100 };
+        var POINT_LIST = [
+            { x:   0, y:   0 },
+            { x:   0, y: 100 },
+            { x:  60, y: 170 },
+            { x: 110, y: 170 },
+            { x: 170, y: 100 },
+            { x: 170, y:   0 },
+        ];
+        var x = [ 100, 100, 160, 210, 270, 270 ];
+        var y = [ 100, 200, 270, 270, 200, 100 ];
+        // var x = [ 0,  0,  6, 11, 17, 17 ];
+        // var y = [ 0, 10, 17, 17, 10, 10 ];
         onload = function() {
-            draw1();
+            var c1 = document.getElementById('c1');
+            rectangle(c1, ORIGIN.x, ORIGIN.y, 170, 100);
+            rectangle(c1, ORIGIN.x + 60, ORIGIN.y + 100, 50, 70);
+            circle_by_point(c1, x[0], y[0], x[1], y[1], x[2], y[2]);
+            circle_by_point(c1, x[0], y[0], x[2], y[2], x[3], y[3]);
+            circle_by_point(c1, x[3], y[3], x[4], y[4], x[5], y[5]);
+
+            var c2 = document.getElementById('c2');
+            rectangle(c2, ORIGIN.x, ORIGIN.y, 170, 100);
+            rectangle(c2, ORIGIN.x + 60, ORIGIN.y + 100, 50, 70);
+            circle_by_point(c2, x[0], y[0], x[2], y[2], x[3], y[3]);
         };
 
+        /* 指定した座標を通る円 */
+        function circle_by_point(canvas, x1, y1, x2, y2, x3, y3) {
+            p = (y1-y3)*(square(y1) - square(y2) + square(x1) - square(x2));
+            p -= (y1-y2)*(square(y1) - square(y3) + square(x1) - square(x3));
+            p /= 2*(y1-y3)*(x1-x2) - 2*(y1-y2)*(x1-x3);
+
+            q = (x1-x3)*(square(x1) - square(x2) + square(y1) - square(y2));
+            q -= (x1-x2)*(square(x1) - square(x3) + square(y1) - square(y3));
+            q /= 2*(x1-x3)*(y1-y2) - 2*(x1-x2)*(y1-y3);
+
+            r = Math.pow(square(x1-p) + square(y1-q), 0.5);
+console.log(p, q, r);
+            circle(canvas, p, q, r);
+        }
+
+        /* 2乗 */
+        function square(target) {
+            return Math.pow(target, 2);
+        }
+
         /* 円を描く */
-        function draw1() {
-          var canvas = document.getElementById('c1');
-          if ( ! canvas || ! canvas.getContext ) { return false; }
+        function circle(canvas, x, y, r) {
           var ctx = canvas.getContext('2d');
           ctx.beginPath();
-          ctx.arc(70, 70, 60, 0, Math.PI*2, false);
+          ctx.arc(x, y, r, 0, Math.PI*2, false);
           ctx.stroke();
+        }
+
+        /* 長方形を描く */
+        function rectangle(canvas, x, y, x_l, y_l) {
+          var ctx = canvas.getContext('2d');
+          ctx.beginPath();
+          ctx.strokeRect(x, y, x_l, y_l);
         }
         </script>
     </body>
