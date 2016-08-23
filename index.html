@@ -1,0 +1,13 @@
+onload = function() {
+  draw1();
+};
+
+/* 円を描く */
+function draw1() {
+  var canvas = document.getElementById('c1');
+  if ( ! canvas || ! canvas.getContext ) { return false; }
+  var ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  ctx.arc(70, 70, 60, 0, Math.PI*2, false);
+  ctx.stroke();
+}
